@@ -64,10 +64,11 @@ class YahooDownloader:
                 # data_df = data_df.append(temp_df)
                 data_df = pd.concat([data_df, temp_df], axis=0)
             else:
-                num_failures += 1
-        if num_failures == len(self.ticker_list):
+                num_failures += 1 # 记录下载失败的次数
+        if num_failures == len(self.ticker_list): # 提示用户所有股票的数据均下载失败
             raise ValueError("no data is fetched.")
-        # reset the index, we want to use numbers as index instead of dates
+        # reset the index, we want to use numbers as index instead of dates / 这个操作是 Pandas 中处理 DataFrame 索引的核心功能之一，特别是在金融时间序列数据分析中非常常见
+        data_df_0 = data_df
         data_df = data_df.reset_index()
         try:
             # convert the column names to standardized names
@@ -101,7 +102,7 @@ class YahooDownloader:
 
         data_df = data_df.sort_values(by=["date", "tic"]).reset_index(drop=True)
 
-        return data_df
+        return data_df, data_df_0
 
     def _adjust_prices(self, data_df: pd.DataFrame) -> pd.DataFrame:
         # use adjusted close price instead of close price
