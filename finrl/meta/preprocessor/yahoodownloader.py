@@ -76,8 +76,8 @@ class YahooDownloader:
             data_df.rename(
                 columns={
                     "Date": "date",
-                    "Adj Close": "adjcp",
-                    "Close": "close",
+                    "Adj Close": "adjcp", # 已复权收盘价（后复权）
+                    "Close": "close", # 原始收盘价
                     "High": "high",
                     "Low": "low",
                     "Volume": "volume",
@@ -87,11 +87,12 @@ class YahooDownloader:
                 inplace=True,
             )
 
-            if not auto_adjust:
+            if not auto_adjust: # 是否自动应用复权调整（雅虎默认行为）
                 data_df = self._adjust_prices(data_df)
         except NotImplementedError:
             print("the features are not supported currently")
-        # create day of the week column (monday = 0)
+        # create day of the week column (monday = 0) 
+        # 创建一个day column，星期一 = 0，星期二 = 1，星期三 = 2， 星期四 = 3， 星期五 = 4，礼拜一至礼拜四才是交易日
         data_df["day"] = data_df["date"].dt.dayofweek
         # convert date to standard string format, easy to filter
         data_df["date"] = data_df.date.apply(lambda x: x.strftime("%Y-%m-%d"))
@@ -105,9 +106,13 @@ class YahooDownloader:
 
         return data_df, data_df_0
 
+    # 这个函数执行的是股票价格的后复权调整，是金融数据处理中的核心操作
+    # 
     def _adjust_prices(self, data_df: pd.DataFrame) -> pd.DataFrame:
         # use adjusted close price instead of close price
+        # 复权因子 adj = 复权价 / 原始价
         data_df["adj"] = data_df["adjcp"] / data_df["close"]
+        # 将所有价格列（开盘/最高/最低/收盘）乘以复权因子，使历史价格反映当前资本结构下的可比价格
         for col in ["open", "high", "low", "close"]:
             data_df[col] *= data_df["adj"]
 
