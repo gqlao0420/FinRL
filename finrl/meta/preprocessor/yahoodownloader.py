@@ -121,6 +121,9 @@ class YahooDownloader:
         return data_df.drop(["adjcp", "adj"], axis=1)
 
     def select_equal_rows_stock(self, df):
+        # select_equal_rows_stock 方法实现了一个股票数据平衡筛选的关键功能，主要用于解决金融时间序列分析中常见的数据不均衡问题。
+        # 核心目的：筛选出数据记录数量达到平均水平的股票，确保不同股票在数据集中的样本量相对均衡。避免模型出现偏差。
+        
         df_check = df.tic.value_counts()
         df_check = pd.DataFrame(df_check).reset_index()
         df_check.columns = ["tic", "counts"]
