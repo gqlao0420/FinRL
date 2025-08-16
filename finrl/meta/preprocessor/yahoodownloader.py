@@ -69,10 +69,10 @@ class YahooDownloader:
             raise ValueError("no data is fetched.")
         # reset the index, we want to use numbers as index instead of dates 
         # 这个操作是 Pandas 中处理 DataFrame 索引的核心功能之一，特别是在金融时间序列数据分析中非常常见
-        data_df_0 = data_df
+        data_df_0 = data_df # 这个是保留原始数据的操作，方便对比Yahoo财经提供的原始数据和处理后的数据变化
         data_df = data_df.reset_index()
         try:
-            # convert the column names to standardized names
+            # convert the column names to standardized names 对原始数据中的特征名进行重命名
             data_df.rename(
                 columns={
                     "Date": "date",
@@ -96,18 +96,18 @@ class YahooDownloader:
         data_df["day"] = data_df["date"].dt.dayofweek
         # convert date to standard string format, easy to filter
         data_df["date"] = data_df.date.apply(lambda x: x.strftime("%Y-%m-%d"))
-        # drop missing data
+        # drop missing data 丢弃数据为NaN的行，并重置索引值index序列号
         data_df = data_df.dropna()
         data_df = data_df.reset_index(drop=True)
         print("Shape of DataFrame: ", data_df.shape)
         # print("Display DataFrame: ", data_df.head())
-
+        
+        # 最终数据重拍序，先按日期date升序排列，相同date中，再根据tic升序排列
         data_df = data_df.sort_values(by=["date", "tic"]).reset_index(drop=True)
 
         return data_df, data_df_0
 
     # 这个函数执行的是股票价格的后复权调整，是金融数据处理中的核心操作
-    # 
     def _adjust_prices(self, data_df: pd.DataFrame) -> pd.DataFrame:
         # use adjusted close price instead of close price
         # 复权因子 adj = 复权价 / 原始价
@@ -117,6 +117,7 @@ class YahooDownloader:
             data_df[col] *= data_df["adj"]
 
         # drop the adjusted close price column
+        # "adjcp", "adj"完成计算使命，就可以丢弃了！
         return data_df.drop(["adjcp", "adj"], axis=1)
 
     def select_equal_rows_stock(self, df):
