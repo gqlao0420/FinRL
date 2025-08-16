@@ -67,7 +67,8 @@ class YahooDownloader:
                 num_failures += 1 # 记录下载失败的次数
         if num_failures == len(self.ticker_list): # 提示用户所有股票的数据均下载失败
             raise ValueError("no data is fetched.")
-        # reset the index, we want to use numbers as index instead of dates / 这个操作是 Pandas 中处理 DataFrame 索引的核心功能之一，特别是在金融时间序列数据分析中非常常见
+        # reset the index, we want to use numbers as index instead of dates 
+        # 这个操作是 Pandas 中处理 DataFrame 索引的核心功能之一，特别是在金融时间序列数据分析中非常常见
         data_df_0 = data_df
         data_df = data_df.reset_index()
         try:
