@@ -48,7 +48,7 @@ class YahooDownloader:
         data_df = pd.DataFrame()
         num_failures = 0
         for tic in self.ticker_list:
-            # 按照股票代码下载，从
+            # 从开始日期到截止日期，按照tic中的股票代码依次下载
             temp_df = yf.download(
                 tic,
                 start=self.start_date,
@@ -56,9 +56,10 @@ class YahooDownloader:
                 proxy=proxy,
                 auto_adjust=auto_adjust,
             )
-            if temp_df.columns.nlevels != 1:
-                temp_df.columns = temp_df.columns.droplevel(1)
+            if temp_df.columns.nlevels != 1: # 检查列索引是否有多级
+                temp_df.columns = temp_df.columns.droplevel(1) # 删除第二级索引
             temp_df["tic"] = tic
+            # 将temp_df数据合并到data_df数据中，按行维度axis=0进行合并
             if len(temp_df) > 0:
                 # data_df = data_df.append(temp_df)
                 data_df = pd.concat([data_df, temp_df], axis=0)
