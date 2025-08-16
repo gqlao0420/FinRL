@@ -48,6 +48,7 @@ class YahooDownloader:
         data_df = pd.DataFrame()
         num_failures = 0
         for tic in self.ticker_list:
+            # 按照股票代码下载，从
             temp_df = yf.download(
                 tic,
                 start=self.start_date,
