@@ -113,7 +113,9 @@ class FeatureEngineer:
         tech_indicator_list : list
             a list of technical indicator names (modified from neofinrl_config.py)
         use_turbulence : boolean
-            use turbulence index or not
+            use turbulence index or not 
+            湍流指数：
+            湍流指数是机构投资者应对极端市场环境的强大工具，尤其在黑天鹅事件频发的现代金融市场中，它能提供传统指标无法捕捉的风险信号。正确应用湍流指数可显著提升投资组合的抗风险能力，避免灾难性损失。
         user_defined_feature:boolean
             use user defined features or not
 
@@ -181,8 +183,19 @@ class FeatureEngineer:
         df = data.copy()
         df = df.sort_values(["date", "tic"], ignore_index=True)
         df.index = df.date.factorize()[0]
+        # 重置索引值
+        # factorize()返回 0-codes 和 1-uniques。uniques是对应列表去重后的值，codes是列表中每个元素在uniques中的位置(从0开始的整数序列)。
+        # 讲解链接：https://blog.csdn.net/weixin_45144170/article/details/115376518
+        
         merged_closes = df.pivot_table(index="date", columns="tic", values="close")
+        # 透视表 pd.pivot_table，一个表格基本组成三要素：行索引，列特征，数值，分别对应三个变量。
+        # 讲解链接：https://blog.csdn.net/anshuai_aw1/article/details/88402641
+        # 透视表是一种可以对数据动态排布并且分类汇总的表格格式。
+        # 要谨记：股票数据，是一种动态数据，而非静态！！！
+        
         merged_closes = merged_closes.dropna(axis=1)
+        # 舍弃含空值的列
+        
         tics = merged_closes.columns
         df = df[df.tic.isin(tics)]
         # df = data.copy()
