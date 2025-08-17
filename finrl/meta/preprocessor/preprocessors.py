@@ -198,6 +198,8 @@ class FeatureEngineer:
         
         tics = merged_closes.columns
         df = df[df.tic.isin(tics)]
+        # 舍弃含空值的列后，列特征即tic就会有所变化，所以要用新的tic更新
+        
         # df = data.copy()
         # list_ticker = df["tic"].unique().tolist()
         # only apply to daily level data, need to fix for minute level
