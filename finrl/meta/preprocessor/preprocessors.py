@@ -219,7 +219,8 @@ class FeatureEngineer:
         :param data: (df) pandas dataframe
         :return: (df) pandas dataframe
         
-        在当前的 add_technical_indicator 方法中，技术指标的实际计算逻辑并未直接体现在代码中，而是通过调用 stockstats 库（即 Sdf.retype 转换后的对象）隐式完成的。
+        在当前的 add_technical_indicator 方法中，看似只是简单的添加股票指标特征的操作。
+        然而技术指标的实际计算逻辑并未直接体现在代码中，而是通过调用 stockstats 库（即 Sdf.retype 转换后的对象）隐式完成的。
         
         问题核心
             1.指标计算的黑箱：            
