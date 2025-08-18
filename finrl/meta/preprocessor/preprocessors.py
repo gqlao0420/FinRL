@@ -218,12 +218,28 @@ class FeatureEngineer:
         use stockstats package to add technical inidactors
         :param data: (df) pandas dataframe
         :return: (df) pandas dataframe
+        
+        在当前的 add_technical_indicator 方法中，技术指标的实际计算逻辑并未直接体现在代码中，而是通过调用 stockstats 库（即 Sdf.retype 转换后的对象）隐式完成的。
+        
+        问题核心
+            1.指标计算的黑箱：            
+            代码中的 stock[stock.tic == unique_ticker[i]][indicator] 直接从 stockstats 转换后的对象中提取预计算的指标值，但未展示如何生成这些指标。            
+            例如：
+            rsi_14 或 macd 的具体计算公式未在代码中体现。
+            
+            2.依赖外部库：            
+            实际计算由 stockstats 库内部实现（通过列名映射到预定义的指标计算规则）。
+            例如：            
+            列名 close_12_ema 会自动触发 12 日指数移动平均的计算。            
+            列名 rsi_14 会自动计算 14 日相对强弱指数。
+        
         """
         df = data.copy()
         df = df.sort_values(by=["tic", "date"])
         stock = Sdf.retype(df.copy())
         unique_ticker = stock.tic.unique()
 
+        # 按各股计算股票技术指标，并添加进股票数据中
         for indicator in self.tech_indicator_list:
             indicator_df = pd.DataFrame()
             for i in range(len(unique_ticker)):
@@ -235,16 +251,20 @@ class FeatureEngineer:
                         "date"
                     ].to_list()
                     # indicator_df = indicator_df.append(
-                    #     temp_indicator, ignore_index=True
+                    #     temp_in    dicator, ignore_index=True
                     # )
                     indicator_df = pd.concat(
                         [indicator_df, temp_indicator], axis=0, ignore_index=True
                     )
+                # 异常处理
                 except Exception as e:
                     print(e)
+                    
+            # 将计算后的指标按 tic 和 date 合并回原始数据
             df = df.merge(
                 indicator_df[["tic", "date", indicator]], on=["tic", "date"], how="left"
             )
+        # 按 date 和 tic 重新排序，确保数据一致性
         df = df.sort_values(by=["date", "tic"])
         return df
         # df = data.set_index(['date','tic']).sort_index()
