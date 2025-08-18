@@ -44,7 +44,7 @@ SQLAlchemy
 stable-baselines3[extra]
 
 # stockstats>=0.4.0
-stockstats @ git+https://github.com/gqlao0420/stockstats-0.6.5.git#egg=stockstats
+stockstats @ git+https://github.com/gqlao0420/stockstats-0.6.5.git@main#egg=stockstats
 
 swig
 
