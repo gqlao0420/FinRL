@@ -114,8 +114,11 @@ class FeatureEngineer:
             a list of technical indicator names (modified from neofinrl_config.py)
         use_turbulence : boolean
             use turbulence index or not 
+            
             湍流指数：
-            湍流指数是机构投资者应对极端市场环境的强大工具，尤其在黑天鹅事件频发的现代金融市场中，它能提供传统指标无法捕捉的风险信号。正确应用湍流指数可显著提升投资组合的抗风险能力，避免灾难性损失。
+            湍流指数是机构投资者应对极端市场环境的强大工具，尤其在黑天鹅事件频发的现代金融市场中，它能提供传统指标无法捕捉的风险信号。
+            正确应用湍流指数可显著提升投资组合的抗风险能力，避免灾难性损失。
+            
         user_defined_feature:boolean
             use user defined features or not
 
