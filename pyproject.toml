@@ -38,7 +38,7 @@ ray = {extras=["default", "tune"], version = "^2"}
 scikit-learn = "^1"
 stable-baselines3 = {version = ">=2.0.0a5", extras = ["extra"]}
 # stockstats = "^0.6"
-stockstats = {git="https://github.com/gqlao0420/stockstats-0.6.5.git"}
+stockstats = {git="https://github.com/gqlao0420/stockstats-0.6.5.git#egg=stockstats"}
 wrds = "^3"
 yfinance = "^0.2"
 alpaca-py = "^0.37"
