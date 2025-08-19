@@ -43,8 +43,8 @@ sphinx_rtd_theme
 SQLAlchemy
 stable-baselines3[extra]
 
-# stockstats>=0.4.0
-stockstats @ git+https://github.com/gqlao0420/stockstats.git@master#egg=stockstats
+stockstats>=0.4.0
+# stockstats @ git+https://github.com/gqlao0420/stockstats.git@master#egg=stockstats
 
 swig
 
