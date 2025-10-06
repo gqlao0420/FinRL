@@ -20,13 +20,15 @@ TRADE_END_DATE = "2021-12-01"
 # check https://pypi.org/project/stockstats/ for different names
 INDICATORS = [
     "macd",
-    "boll_ub",
-    "boll_lb",
-    "rsi_30",
-    "cci_30",
-    "dx_30",
-    "close_30_sma",
-    "close_60_sma",
+    "macds",
+    "macdh",
+    # "boll_ub",
+    # "boll_lb",
+    # "rsi_30",
+    # "cci_30",
+    # "dx_30",
+    # "close_30_sma",
+    # "close_60_sma",
 ]
 
 
