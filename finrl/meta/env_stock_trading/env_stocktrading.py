@@ -558,10 +558,17 @@ class StockTradingEnv(gym.Env):
         return df_actions
 
     def _seed(self, seed=None):
+            # 设置随机数种子的方法，确保实验的可重复性
         self.np_random, seed = seeding.np_random(seed)
-        return [seed]
+            # 1.将创建的随机数生成器赋值给 self.np_random
+            # 2.同时获取实际使用的种子值 seed
+        return [seed] # 返回包含种子值的列表（符合OpenAI Gym的接口规范）
 
     def get_sb_env(self):
-        e = DummyVecEnv([lambda: self])
-        obs = e.reset()
+            # 用于创建Stable-Baselines兼容环境的封装方法
+        e = DummyVecEnv([lambda: self]) 
+            # 1.将单个环境包装成Stable-Baselines需要的向量化环境格式; 
+            # 2.lambda: self: 创建一个返回当前环境实例的匿名函数
+            # 3.DummyVecEnv：Stable-Baselines中的环境包装器，用于处理单个环境
+        obs = e.reset() # 重置向量化环境，返回初始观测值
         return e, obs
