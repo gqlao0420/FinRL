@@ -35,26 +35,26 @@ class StockTradingEnv(gym.Env):
     def __init__(
         self,
         df: pd.DataFrame,
-        stock_dim: int,
-        hmax: int,
-        initial_amount: int,
-        num_stock_shares: list[int],
-        buy_cost_pct: list[float],
-        sell_cost_pct: list[float],
-        reward_scaling: float,
-        state_space: int,
-        action_space: int,
-        tech_indicator_list: list[str],
-        turbulence_threshold=None,
-        risk_indicator_col="turbulence",
-        make_plots: bool = False,
-        print_verbosity=10,
-        day=0,
-        initial=True,
-        previous_state=[],
-        model_name="",
-        mode="",
-        iteration="",
+        stock_dim: int, # 投资组合中的股票数量
+        hmax: int, # 每次交易的最大股数限制
+        initial_amount: int, # 初始资金量
+        num_stock_shares: list[int], # 每只股票的初始持仓数量
+        buy_cost_pct: list[float], # 每只股票的买入交易成本率（百分比）
+        sell_cost_pct: list[float], # 每只股票的卖出交易成本率（百分比）
+        reward_scaling: float, # 奖励缩放因子，用于调整奖励值的范围，越小越适合强化学习
+        state_space: int, # 状态空间的维度，通常 = 股票数量 * (价格特征数 + 技术指标数) + 账户信息
+        action_space: int, # 动作空间的维度，通常是股票数量的3倍，每个股票有3种动作：买入、卖出、持有
+        tech_indicator_list: list[str], # 使用的技术指标列表
+        turbulence_threshold=None, # 市场波动阈值，超过此值时可能限制交易或清仓
+        risk_indicator_col="turbulence", # 数据框中表示风险指标的列名，此处使用turbulence列作为风险指标
+        make_plots: bool = False, # 是否在训练过程中生成图表
+        print_verbosity=10, # 打印信息的频率
+        day=0, # 当前交易日索引
+        initial=True, # 是否是初始状态
+        previous_state=[], # 前一个状态，用于状态转移
+        model_name="", # 模型名称标识
+        mode="", # 运行模式：train 或 trade
+        iteration="", # 迭代次数或版本标识
     ):
         self.day = day
         self.df = df
@@ -65,13 +65,16 @@ class StockTradingEnv(gym.Env):
         self.buy_cost_pct = buy_cost_pct
         self.sell_cost_pct = sell_cost_pct
         self.reward_scaling = reward_scaling
-        self.state_space = state_space
-        self.action_space = action_space
+        self.state_space = state_space # 这里赋值应该是状态的维度，是整数
+        self.action_space = action_space # 这里赋值应该是动作的维度，是整数
         self.tech_indicator_list = tech_indicator_list
-        self.action_space = spaces.Box(low=-1, high=1, shape=(self.action_space,))
+        
+            # 在Gym中，spaces.Box 用于定义连续的 动作空间 或 观测(状态)空间。它表示一个n维的空间，其中每个维度都有上下界。
+        self.action_space = spaces.Box(low=-1, high=1, shape=(self.action_space,)) # 这里是通过动作维度生成一个连续的动作空间
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(self.state_space,)
-        )
+        ) # 这里是通过状态维度生成一个连续的状态空间
+        
         self.data = self.df.loc[self.day, :]
         self.terminal = False
         self.make_plots = make_plots
@@ -87,11 +90,12 @@ class StockTradingEnv(gym.Env):
         self.state = self._initiate_state()
 
         # initialize reward
-        self.reward = 0
-        self.turbulence = 0
-        self.cost = 0
-        self.trades = 0
-        self.episode = 0
+        self.reward = 0 # 奖励 - 直接指导智能体学习的方向
+        self.turbulence = 0 # 波动率/湍流风险管理，避免在动荡市场中过度交易
+        self.cost = 0 # 现实性考虑，反映真实交易中的摩擦成本，累计交易成本，用于计算净收益
+        self.trades = 0 # 统计交易次数，用于控制交易频率，防止过度交易
+        self.episode = 0 # 训练进度跟踪和超参数调度
+        
         # memorize all the total balance change
         self.asset_memory = [
             self.initial_amount
@@ -100,6 +104,7 @@ class StockTradingEnv(gym.Env):
                 * np.array(self.state[1 : 1 + self.stock_dim])
             )
         ]  # the initial total asset is calculated by cash + sum (num_share_stock_i * price_stock_i)
+            # 记录投资组合总价值的历史变化，这个是核心绩效指标，直接反映策略盈利能力
         self.rewards_memory = []
         self.actions_memory = []
         self.state_memory = (
