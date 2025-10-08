@@ -235,6 +235,8 @@ class StockTradingEnv(gym.Env):
 
     def step(self, actions):
         self.terminal = self.day >= len(self.df.index.unique()) - 1
+            # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
+            # 否则 → self.terminal = False，未结束
         if self.terminal:
             # print(f"Episode: {self.episode}")
             if self.make_plots:
