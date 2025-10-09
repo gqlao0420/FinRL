@@ -38,7 +38,7 @@ class StockTradingEnv(gym.Env):
         stock_dim: int, # 投资组合中的股票数量
         hmax: int, # 每次交易的最大股数限制
         initial_amount: int, # 初始资金量
-        num_stock_shares: list[int], # 每只股票的初始持仓数量
+        num_stock_shares: list[int], # 每只股票的持仓数量
         buy_cost_pct: list[float], # 每只股票的买入交易成本率（百分比）
         sell_cost_pct: list[float], # 每只股票的卖出交易成本率（百分比）
         reward_scaling: float, # 奖励缩放因子，用于调整奖励值的范围，越小越适合强化学习
