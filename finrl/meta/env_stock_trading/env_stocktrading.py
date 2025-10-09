@@ -423,17 +423,25 @@ class StockTradingEnv(gym.Env):
             if len(self.df.tic.unique()) > 1:
                 # for multiple stock
                 state = (
-                    [self.initial_amount]
-                    + self.data.close.values.tolist()
-                    + self.num_stock_shares
+                    [self.initial_amount] # 1. 初始资金
+                    + self.data.close.values.tolist() # 2. 各股票收盘价
+                    + self.num_stock_shares # 3. 各股票持仓数量
                     + sum(
                         (
                             self.data[tech].values.tolist()
                             for tech in self.tech_indicator_list
                         ),
                         [],
-                    )
+                    ) # 4. 所有技术指标
                 )  # append initial stocks_share to initial state, instead of all zero
+                   # 这里的 + 不是求和逻辑，而是Python列表的连接(concatenation)操作，而 sum(..., []) 是用于将嵌套列表扁平化。两者作用不同，但共同构建了最终的状态表示。
+                   # # 状态向量有清晰的结构：
+                        # state = [
+                        #    cash,           # 资金信息
+                        #    *prices,        # 市场信息  
+                        #    *holdings,      # 持仓信息
+                        #    *technical      # 技术信号
+                        # ]
             else:
                 # for single stock
                 state = (
