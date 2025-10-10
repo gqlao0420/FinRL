@@ -239,7 +239,7 @@ class StockTradingEnv(gym.Env):
             # 否则 → self.terminal = False，未结束
         if self.terminal:
             # print(f"Episode: {self.episode}")
-            if self.make_plots:
+            if self.make_plots: # 初始值默认是False
                 self._make_plot()
             end_total_asset = self.state[0] + sum(
                 np.array(self.state[1 : (self.stock_dim + 1)])
@@ -317,7 +317,7 @@ class StockTradingEnv(gym.Env):
 
             return self.state, self.reward, self.terminal, False, {}
 
-        else:
+        else: # terminal == True, 结束后操作
             actions = actions * self.hmax  # actions initially is scaled between 0 to 1
             actions = actions.astype(
                 int
