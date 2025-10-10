@@ -237,7 +237,7 @@ class StockTradingEnv(gym.Env):
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
-        if self.terminal:
+        if self.terminal: # 强化学习已经结束，进行最后统计
             # print(f"Episode: {self.episode}")
             if self.make_plots: # 初始值默认是False
                 self._make_plot()
@@ -317,7 +317,7 @@ class StockTradingEnv(gym.Env):
 
             return self.state, self.reward, self.terminal, False, {}
 
-        else: # terminal == True, 结束后操作
+        else: # terminal == False, 强化学习训练未结束，继续下一步！！！
             actions = actions * self.hmax  # actions initially is scaled between 0 to 1
             actions = actions.astype(
                 int
