@@ -36,7 +36,8 @@ class StockTradingEnv(gym.Env):
         self,
         df: pd.DataFrame,
         stock_dim: int, # 投资组合中的股票数量
-        hmax: int, # 每次交易的最大股数限制
+        hmax: int, # 每次交易的最大股数限制，这个环境中，并没有设置持股动作，只有买和卖两个动作，通过限制最高操作股数来默认其他股票是持股动作。
+                   # 这种做法有些脱离实际，后续可以加入持股动作，使交易环境更加接近现实！！！
         initial_amount: int, # 初始资金量
         num_stock_shares: list[int], # 每只股票的持仓数量
         buy_cost_pct: list[float], # 每只股票的买入交易成本率（百分比）
