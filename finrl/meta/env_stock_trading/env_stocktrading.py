@@ -30,6 +30,26 @@ class StockTradingEnv(gym.Env):
         print_verbosity(int): When iterating (step), how often to print stats about state of env
     """
 
+    """
+    self.data - 代表按同一个日期进行索引，包含账户及所有股票的完整信息(包含现金、各股收盘价、各股持仓量、各股的技术指标等)
+    # 状态向量的标准结构（多股票情况）：
+    self.state = [
+        cash,           # 索引0: 现金
+        price_1,        # 索引1: 股票1价格
+        price_2,        # 索引2: 股票2价格
+        ...,
+        price_N,        # 索引N: 股票N价格
+        shares_1,       # 索引N+1: 股票1持仓
+        shares_2,       # 索引N+2: 股票2持仓
+        ...,
+        shares_N,       # 索引2N: 股票N持仓
+        tech_1_stock1,  # 索引2N+1: 技术指标1-股票1
+        tech_1_stock2,  # 索引2N+2: 技术指标1-股票2
+        ...,
+        tech_M_stockN   # 索引2N + M*N: 技术指标M-股票N
+    ]
+    """
+
     metadata = {"render.modes": ["human"]}
 
     def __init__(
