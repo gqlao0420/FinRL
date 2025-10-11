@@ -48,6 +48,12 @@ class StockTradingEnv(gym.Env):
         ...,
         tech_M_stockN   # 索引2N + M*N: 技术指标M-股票N
     ]
+
+    索引规则：
+    self.state[0] - 现金
+    self.state[1:self.stock_dim] - 各股收盘价
+    self.state[(1 * self.stock_dim + 1):(2 * self.stock_dim + 1)] - 各股收盘价
+    
     """
 
     metadata = {"render.modes": ["human"]}
@@ -55,7 +61,7 @@ class StockTradingEnv(gym.Env):
     def __init__(
         self,
         df: pd.DataFrame,
-        stock_dim: int, # 投资组合中的股票数量
+        stock_dim: int, # 股票数量N
         hmax: int, # 每次交易的最大股数限制，这个环境中，并没有设置持股动作，只有买和卖两个动作，通过限制最高操作股数来默认其他股票是持股动作。
                    # 这种做法有些脱离实际，后续可以加入持股动作，使交易环境更加接近现实！！！
         initial_amount: int, # 初始资金量
@@ -255,6 +261,12 @@ class StockTradingEnv(gym.Env):
         plt.close()
 
     def step(self, actions):
+
+        if self.day == 3:
+            print(self.state)
+            self.data
+
+        
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
