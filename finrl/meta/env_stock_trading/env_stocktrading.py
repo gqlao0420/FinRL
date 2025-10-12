@@ -261,12 +261,6 @@ class StockTradingEnv(gym.Env):
         plt.close()
 
     def step(self, actions):
-
-        if self.day == 3:
-            print(self.state)
-            self.data
-
-        
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
