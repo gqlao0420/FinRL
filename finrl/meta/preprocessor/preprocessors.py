@@ -32,7 +32,7 @@ def data_split(df, start, end, target_date_col="date"):
     data = df[(df[target_date_col] >= start) & (df[target_date_col] < end)] # 筛选并提取从起始日期至结束日期的数据，target_date_col是以"date"为特征的变量
     data = data.sort_values([target_date_col, "tic"], ignore_index=True) # 将提取的数据按照优先target_date_col特征，兼顾"tic"特征进行排序
     data.index = data[target_date_col].factorize()[0] # 排序后的数据，以target_date_col特征为分类变量（字符串、类别等），映射为整数数值，同时保留原始值与数值的对应关系，并将其设置为index
-    return data # 只要按照index索引，就能索引到对应日期下，所有股票的所有信息！！！方便env进行输入～
+    return data # 使用pd.loc[index, :]索引，就能索引到对应index日期下，所有股票的所有信息！！！方便env进行输入～
 
 
 def convert_to_datetime(time):
