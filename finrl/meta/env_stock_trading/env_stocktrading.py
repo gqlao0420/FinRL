@@ -48,11 +48,18 @@ class StockTradingEnv(gym.Env):
         ...,
         tech_M_stockN   # 索引2N + M*N: 技术指标M-股票N
     ]
-
+    
+    self.stock_dim - 股票数量（通常问有多少只股票的意思，比如股票代码AAPL，AMGN，AXP等的总数量）
+    
     索引规则：
     self.state[0] - 现金
-    self.state[1:self.stock_dim] - 各股收盘价
-    self.state[(1 * self.stock_dim + 1):(2 * self.stock_dim + 1)] - 各股收盘价
+    self.state[(self.stock_dim * 0 + 1):(self.stock_dim * 1 + 1)] - 各股收盘价
+    self.state[(self.stock_dim * 1 + 1):(self.stock_dim * 2 + 1)] - 各股持仓量
+    self.state[(self.stock_dim * 2 + 1):(self.stock_dim * 3 + 1)] - 技术指标1
+    self.state[(self.stock_dim * 3 + 1):(self.stock_dim * 4 + 1)] - 技术指标2
+    self.state[(self.stock_dim * 4 + 1):(self.stock_dim * 5 + 1)] - 技术指标3
+    self.state[(self.stock_dim * 5 + 1):(self.stock_dim * 6 + 1)] - 技术指标5
+    ......
     
     """
 
