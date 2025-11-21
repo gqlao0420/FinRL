@@ -22,6 +22,7 @@ from finrl.meta.env_stock_trading.env_stocktrading import StockTradingEnv
 from finrl.meta.preprocessor.preprocessors import data_split
 
 MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo": PPO}
+    # 将强化学习模型实例，装进list中，方便统一管理
 
 MODEL_KWARGS = {x: config.__dict__[f"{x.upper()}_PARAMS"] for x in MODELS.keys()}
     # x.upper() - 将x的值全部大写；f"{...}_PARAMS" - 就是拼接成(”X_PARAMS“)
