@@ -24,6 +24,8 @@ from finrl.meta.preprocessor.preprocessors import data_split
 MODELS = {"a2c": A2C, "ddpg": DDPG, "td3": TD3, "sac": SAC, "ppo": PPO}
 
 MODEL_KWARGS = {x: config.__dict__[f"{x.upper()}_PARAMS"] for x in MODELS.keys()}
+    # x.upper() - 将x的值全部大写；f"{...}_PARAMS" - 就是拼接成(”X_PARAMS“)
+    # config.__dict__[...] - 根据...内容查询并返回config中定义的变量
 
 NOISE = {
     "normal": NormalActionNoise,
