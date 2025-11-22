@@ -37,6 +37,7 @@ DOW_30_TICKER = [
     "DIS",
     "SHW",
     "NVDA",
+    "AMZN",
 ]
 
 “”“
@@ -47,6 +48,7 @@ DOW_30_TICKER = [
 "SHW", # 2025/11手动添加
 "NVDA", # 2025/11手动添加
 "HON", # 2025/11手动添加
+"AMZN", # 2025/11手动添加
 ”“”
 
 # Nasdaq 100 constituents at 2019/01
