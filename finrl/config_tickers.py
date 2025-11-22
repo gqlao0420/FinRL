@@ -37,7 +37,6 @@ DOW_30_TICKER = [
     "DIS",
     "SHW",
     "NVDA",
-    "HON",
 ]
 
 “”“
