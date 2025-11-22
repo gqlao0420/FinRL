@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+# 成分股不是一成不变的，要注意及时更新，后续可以做一个动态更新
+# 手动更新请参考：https://cn.tradingview.com/symbols/DJ-DJI/components/
+
 SINGLE_TICKER = ["AAPL"]
 
 # Dow 30 constituents in 2021/10
@@ -16,7 +19,7 @@ DOW_30_TICKER = [
     "HD",
     "HON",
     "IBM",
-    "INTC",
+    # "INTC", # 2025/11手动取消
     "JNJ",
     "KO",
     "JPM",
@@ -31,10 +34,13 @@ DOW_30_TICKER = [
     "CRM",
     "VZ",
     "V",
-    "WBA",
+    # "WBA", # 2025/11手动取消
     "WMT",
     "DIS",
-    "DOW",
+    # "DOW", # 2025/11手动取消
+    "SHW", # 2025/11手动添加
+    "NVDA", # 2025/11手动添加
+    "HON", # 2025/11手动添加
 ]
 
 # Nasdaq 100 constituents at 2019/01
