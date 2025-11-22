@@ -64,6 +64,10 @@ class StockTradingEnv(gym.Env):
     """
 
     metadata = {"render.modes": ["human"]}
+        # 这个是字典变量，用于配置环境的渲染选项
+        # metadata - 环境元数据配置字典
+        # render.modes - 指定环境支持的渲染模式
+        # ["human"] - 表示环境支持"human"这种渲染模式：1）屏幕会弹出可视化窗口，2）实时显示智能体与环境的交互过程，3）适合人类观察训练过程或测试效果
 
     def __init__(
         self,
