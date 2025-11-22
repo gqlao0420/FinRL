@@ -68,6 +68,7 @@ class StockTradingEnv(gym.Env):
         # metadata - 环境元数据配置字典
         # render.modes - 指定环境支持的渲染模式
         # ["human"] - 表示环境支持"human"这种渲染模式：1）屏幕会弹出可视化窗口，2）实时显示智能体与环境的交互过程，3）适合人类观察训练过程或测试效果
+        # 其他模式：1) "rgb_array" - 返回环境的RGB数组，用于程序化处理; 2) "ansi" - 返回文本渲染结果
 
     def __init__(
         self,
