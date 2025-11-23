@@ -459,10 +459,11 @@ class StockTradingEnv(gym.Env):
     def _initiate_state(self):
         """
         构建 state 成分，对应 state_space 的维度来详细说明：
-        0 - 对应当前时刻的总资产
-        1:stock_dim + 1 - 对应当前时刻各股票的收盘价
-        stock_dim + 1 : stock_dim * 2 + 1 - 对应当前时刻各股票的持仓数量
-        stock_dim * 2 + 1: stock_dim * len(tech_indicator_list) + 1 - 对应当前时刻各股票的技术指标值
+        [0] - 对应当前时刻的总资产
+        [1 : stock_dim + 1] - 对应当前时刻各股票的收盘价
+        [stock_dim + 1 : stock_dim * 2 + 1] - 对应当前时刻各股票的持仓数量
+        [stock_dim * 2 + 1: stock_dim * (2 + len(tech_indicator_list)) + 1] - 对应当前时刻各股票的技术指标值，这个切片中，每跨一个stock_dim长度，对应着同一个技术指标
+            通过切片可以索引到同一个技术指标下，所有股票的指标数值，tech_num表示技术指标的序号，从0开始 - [stock_dim * (2 + tech_num) + 1 : stock_dim * (2 + tech_num + 1) + 1]
         """
         if self.initial:
             # For Initial State
