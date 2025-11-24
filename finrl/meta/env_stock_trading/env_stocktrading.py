@@ -157,6 +157,7 @@ class StockTradingEnv(gym.Env):
     def _sell_stock(self, index, action):
         def _do_sell_normal():
             # 这个可交易信号是如何计算的啊？在_initiate_state()中，可是没有的啊。。。
+            # 这里索引到的是MACD技术指标，有明显的逻辑错误，需要修改代码，明确可交易信号如何计算！！！！
             if (
                 self.state[index + 2 * self.stock_dim + 1] != True
             ):  # check if the stock is able to sell, for simlicity we just add it in techical index - 交易信号是直接加在技术指标之前吗？
