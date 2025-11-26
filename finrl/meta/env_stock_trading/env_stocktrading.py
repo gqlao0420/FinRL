@@ -156,7 +156,7 @@ class StockTradingEnv(gym.Env):
 
     def _sell_stock(self, index, action):
         def _do_sell_normal():
-            print(f"de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}")
+            print(f"sefl.day = {sefl.day}, de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}")
             # 这个可交易信号是如何计算的啊？在_initiate_state()中，可是没有的啊。。。
             # 这里索引到的是MACD技术指标，有明显的逻辑错误，需要修改代码，明确可交易信号如何计算！！！！
             if (
