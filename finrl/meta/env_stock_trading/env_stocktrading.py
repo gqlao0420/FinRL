@@ -155,9 +155,11 @@ class StockTradingEnv(gym.Env):
         self._seed()
 
     def _sell_stock(self, index, action):
+        """
+        这个函数操作单个股票卖出
+        """
         def _do_sell_normal():
-            print(f"action = {action}")
-            print(f"self.day = {self.day}, de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}") # 验证这个是MACD技术指标值，数值，不是True或False
+            # print(f"self.day = {self.day}, de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}") # 验证这个是MACD技术指标值，数值，不是True或False
             # 这个可交易信号是如何计算的啊？在_initiate_state()中，可是没有的啊。。。
             # 这里索引到的是MACD技术指标，有明显的逻辑错误，需要修改代码，明确可交易信号如何计算！！！！
             # 这里是故意简化，没有直接删除，就是希望每个人在真实的交易环境下，根据市场交易逻辑，设定可交易信号，用可交易信号判断买入卖出！！！良心！！！
@@ -169,18 +171,22 @@ class StockTradingEnv(gym.Env):
                 # perform sell action based on the sign of the action
                 if self.state[index + self.stock_dim + 1] > 0:
                     # Sell only if current asset is > 0
+                        # 确保action提供的数值，不能超过持有的股票数量，要在action和现持有股票数量之间取一个最小值，否则违背交易逻辑
                     sell_num_shares = min(
                         abs(action), self.state[index + self.stock_dim + 1]
                     )
+                        # 计算卖出股票的收益，要减去交易成本
                     sell_amount = (
                         self.state[index + 1]
                         * sell_num_shares
                         * (1 - self.sell_cost_pct[index])
                     )
-                    # update balance
+                    # update balance - 更新现金cash、更新持有的股票数量、更新交易成本
+                        # 卖出股票收益后，要更新cash，要加
                     self.state[0] += sell_amount
-
+                        # 卖出股票后，需要更新持有的股票数量
                     self.state[index + self.stock_dim + 1] -= sell_num_shares
+                        # 计算卖出股票的交易成本，并累计
                     self.cost += (
                         self.state[index + 1]
                         * sell_num_shares
@@ -202,13 +208,14 @@ class StockTradingEnv(gym.Env):
                     # if turbulence goes over threshold, just clear out all positions
                     if self.state[index + self.stock_dim + 1] > 0:
                         # Sell only if current asset is > 0
+                            # 这是清盘，股票全部清空啊
                         sell_num_shares = self.state[index + self.stock_dim + 1]
                         sell_amount = (
                             self.state[index + 1]
                             * sell_num_shares
                             * (1 - self.sell_cost_pct[index])
                         )
-                        # update balance
+                        # update balance - 更新现金cash、更新持有的股票数量、更新交易成本
                         self.state[0] += sell_amount
                         self.state[index + self.stock_dim + 1] = 0
                         self.cost += (
@@ -229,6 +236,9 @@ class StockTradingEnv(gym.Env):
         return sell_num_shares
 
     def _buy_stock(self, index, action):
+        """
+        这个函数操作单个股票买入
+        """
         def _do_buy():
             if (
                 self.state[index + 2 * self.stock_dim + 1] != True
@@ -238,6 +248,7 @@ class StockTradingEnv(gym.Env):
                 available_amount = self.state[0] // (
                     self.state[index + 1] * (1 + self.buy_cost_pct[index])
                 )  # when buying stocks, we should consider the cost of trading when calculating available_amount, or we may be have cash<0
+                # 在采取买入之前，需要考虑现有资金还可以买多少股，结合action给的数量，取两者最小值。
                 # print('available_amount:{}'.format(available_amount))
 
                 # update balance
@@ -247,6 +258,7 @@ class StockTradingEnv(gym.Env):
                     * buy_num_shares
                     * (1 + self.buy_cost_pct[index])
                 )
+                # 买入股票，更新cash，要减少
                 self.state[0] -= buy_amount
 
                 self.state[index + self.stock_dim + 1] += buy_num_shares
