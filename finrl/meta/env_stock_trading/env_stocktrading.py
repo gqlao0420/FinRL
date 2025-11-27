@@ -155,9 +155,9 @@ class StockTradingEnv(gym.Env):
         self._seed()
 
     def _sell_stock(self, index, action):
-        print(f"action = {action}")
         def _do_sell_normal():
-            # print(f"self.day = {self.day}, de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}") # 验证这个是MACD技术指标值，数值，不是True或False
+            print(f"action = {action}")
+            print(f"self.day = {self.day}, de_sell_normal: self.state[{index} + 2 * {self.stock_dim} + 1] = {self.state[index + 2 * self.stock_dim + 1]}") # 验证这个是MACD技术指标值，数值，不是True或False
             # 这个可交易信号是如何计算的啊？在_initiate_state()中，可是没有的啊。。。
             # 这里索引到的是MACD技术指标，有明显的逻辑错误，需要修改代码，明确可交易信号如何计算！！！！
             # 这里是故意简化，没有直接删除，就是希望每个人在真实的交易环境下，根据市场交易逻辑，设定可交易信号，用可交易信号判断买入卖出！！！良心！！！
