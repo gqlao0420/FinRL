@@ -291,7 +291,7 @@ class StockTradingEnv(gym.Env):
         plt.close()
 
     def step(self, actions):
-        print(f"action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
+        print(f"Without hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
@@ -377,6 +377,7 @@ class StockTradingEnv(gym.Env):
 
         else: # terminal == False, 强化学习训练未结束，继续下一步！！！
             actions = actions * self.hmax  # actions initially is scaled between 0 to 1
+            print(f"With hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
             actions = actions.astype(
                 int
             )  # convert into integer because we can't by fraction of shares
