@@ -389,7 +389,8 @@ class StockTradingEnv(gym.Env):
                 * np.array(self.state[(self.stock_dim + 1) : (self.stock_dim * 2 + 1)])
             )
             # print("begin_total_asset:{}".format(begin_total_asset))
-
+            
+            print(f"bigen actions are {actions}")
             argsort_actions = np.argsort(actions) 
                 # 按值大小，从小到大排序，但返回排序后的元素在原数组中的索引位置，而不是排序后的值本身。
             sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]] 
