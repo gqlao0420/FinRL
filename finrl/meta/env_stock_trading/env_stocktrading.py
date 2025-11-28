@@ -175,7 +175,7 @@ class StockTradingEnv(gym.Env):
                     sell_num_shares = min(
                         abs(action), self.state[index + self.stock_dim + 1]
                     )
-                        # 计算卖出股票的收益，要减去交易成本
+                        # 计算卖出股票的收益，要减去交易成本，注意交易成本是在卖出收益中减去
                     sell_amount = (
                         self.state[index + 1]
                         * sell_num_shares
@@ -240,6 +240,7 @@ class StockTradingEnv(gym.Env):
         这个函数操作单个股票买入
         """
         def _do_buy():
+            # 同理_do_buy()函数，这个判断可买入的信号，后期也要按照正确的逻辑梳理
             if (
                 self.state[index + 2 * self.stock_dim + 1] != True
             ):  # check if the stock is able to buy
@@ -251,7 +252,7 @@ class StockTradingEnv(gym.Env):
                 # 在采取买入之前，需要考虑现有资金还可以买多少股，结合action给的数量，取两者最小值。
                 # print('available_amount:{}'.format(available_amount))
 
-                # update balance
+                # update balance 买入股票，要计算交易成本
                 buy_num_shares = min(available_amount, action)
                 buy_amount = (
                     self.state[index + 1]
@@ -290,6 +291,7 @@ class StockTradingEnv(gym.Env):
         plt.close()
 
     def step(self, actions):
+        print(f"action = {action}, action's shape is {actionshape}, action's type is {type(action)}")
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
