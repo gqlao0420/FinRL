@@ -291,7 +291,7 @@ class StockTradingEnv(gym.Env):
         plt.close()
 
     def step(self, actions):
-        print(f"Without hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
+        # print(f"Without hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
         self.terminal = self.day >= len(self.df.index.unique()) - 1
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
@@ -377,22 +377,27 @@ class StockTradingEnv(gym.Env):
 
         else: # terminal == False, 强化学习训练未结束，继续下一步！！！
             actions = actions * self.hmax  # actions initially is scaled between 0 to 1
-            print(f"With hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
-            actions = actions.astype(
-                int
-            )  # convert into integer because we can't by fraction of shares
+            # print(f"With hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
+            actions = actions.astype(int)  # convert into integer because we can't by fraction of shares, 只取整数部分，小数部分舍弃
+            
             if self.turbulence_threshold is not None:
                 if self.turbulence >= self.turbulence_threshold:
                     actions = np.array([-self.hmax] * self.stock_dim)
+            # 在此刻操作股票之前，统计总资产(账户现金+股票价值)
             begin_total_asset = self.state[0] + sum(
                 np.array(self.state[1 : (self.stock_dim + 1)])
                 * np.array(self.state[(self.stock_dim + 1) : (self.stock_dim * 2 + 1)])
             )
             # print("begin_total_asset:{}".format(begin_total_asset))
 
-            argsort_actions = np.argsort(actions)
-            sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]]
+            argsort_actions = np.argsort(actions) 
+                # 按值大小，从小到大排序，但返回排序后的元素在原数组中的索引位置，而不是排序后的值本身。
+            sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]] 
+                # np.where(actions < 0)[0].shape[0] - 筛选actions中小于0的值的个数，np.where(actions < 0) - tuple类型, [0].shape[0] - 间接的出小于0的个数
+                # [: np.where(actions < 0)[0].shape[0]] - 取值
             buy_index = argsort_actions[::-1][: np.where(actions > 0)[0].shape[0]]
+                # argsort_actions[::-1] - 逆序排列，原本是从小到大，但这样操作就变成从大到小
+                # [: np.where(actions > 0)[0].shape[0]] - 取直
 
             for index in sell_index:
                 # print(f"Num shares before: {self.state[index+self.stock_dim+1]}")
@@ -404,7 +409,7 @@ class StockTradingEnv(gym.Env):
             for index in buy_index:
                 # print('take buy action: {}'.format(actions[index]))
                 actions[index] = self._buy_stock(index, actions[index])
-
+            print(f"actions are {actions}")
             self.actions_memory.append(actions)
 
             # state: s -> s+1
