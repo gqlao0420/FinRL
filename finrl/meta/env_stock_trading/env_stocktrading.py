@@ -293,6 +293,9 @@ class StockTradingEnv(gym.Env):
     def step(self, actions):
         # print(f"Without hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
         self.terminal = self.day >= len(self.df.index.unique()) - 1
+            """
+            这部分是terminal == True的操作
+            """
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
         if self.terminal: # 强化学习已经结束，进行最后统计
@@ -376,6 +379,15 @@ class StockTradingEnv(gym.Env):
             return self.state, self.reward, self.terminal, False, {}
 
         else: # terminal == False, 强化学习训练未结束，继续下一步！！！
+            """
+            这部分是terminal == False的正常交易
+            
+            actions.shape - (stock_num, )，长度为stock_num的一维数组
+            actions[index] - 每一个index对应一只股票，其数值：正号代表买入，负号代表卖出，数值大小经过100倍处理后再取整数部分，代表Agent或Neural network初步评估这只股票要交易的量
+            actions - 要将正负数值分开，正号数值采用do_buy处理，负号数值采用do_sell处理，这就完整一轮股票交易
+            do_buy 和 do_sell - 是为Agent 或 Nerual network添加部分交易规则，比如限制卖出大于持有，买入成本大于现金流本身，以及在特殊情况下执行清盘等，
+                                但多数情况下判断，还是要依赖Agent 或 Nerual network根据state变化，利用强化学习算法做出判断
+            """
             actions = actions * self.hmax  # actions initially is scaled between 0 to 1
             # print(f"With hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
             actions = actions.astype(int)  # convert into integer because we can't by fraction of shares, 只取整数部分，小数部分舍弃
@@ -390,7 +402,7 @@ class StockTradingEnv(gym.Env):
             )
             # print("begin_total_asset:{}".format(begin_total_asset))
             
-            print(f"begin actions are {np.array(actions)}")
+            # print(f"begin actions are {np.array(actions)}")
             argsort_actions = np.argsort(actions) 
                 # 按值大小，从小到大排序，但返回排序后的元素在原数组中的索引位置，而不是排序后的值本身。
             sell_index = argsort_actions[: np.where(actions < 0)[0].shape[0]] 
@@ -400,7 +412,7 @@ class StockTradingEnv(gym.Env):
                 # argsort_actions[::-1] - 逆序排列，原本是从小到大，但这样操作就变成从大到小
                 # [: np.where(actions > 0)[0].shape[0]] - 取直
             
-            print(f"before sell_index, actions are {np.array(actions)}")
+            # print(f"before sell_index, actions are {np.array(actions)}")
             for index in sell_index:
                 # print(f"Num shares before: {self.state[index+self.stock_dim+1]}")
                 # print(f'take sell action before : {actions[index]}')
@@ -408,12 +420,12 @@ class StockTradingEnv(gym.Env):
                 # print(f'take sell action after : {actions[index]}')
                 # print(f"Num shares after: {self.state[index+self.stock_dim+1]}")
             
-            print(f"before buy_index, actions are {np.array(actions)}")
+            # print(f"before buy_index, actions are {np.array(actions)}")
             for index in buy_index:
                 # print('take buy action: {}'.format(actions[index]))
                 actions[index] = self._buy_stock(index, actions[index])
             
-            print(f"after buy_index, actions are {np.array(actions)}")
+            # print(f"after buy_index, actions are {np.array(actions)}")
             self.actions_memory.append(actions)
 
             # state: s -> s+1
