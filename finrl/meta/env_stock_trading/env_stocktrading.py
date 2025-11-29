@@ -399,18 +399,21 @@ class StockTradingEnv(gym.Env):
             buy_index = argsort_actions[::-1][: np.where(actions > 0)[0].shape[0]]
                 # argsort_actions[::-1] - 逆序排列，原本是从小到大，但这样操作就变成从大到小
                 # [: np.where(actions > 0)[0].shape[0]] - 取直
-
+            
+            print(f"before sell_index, actions are {actions}")
             for index in sell_index:
                 # print(f"Num shares before: {self.state[index+self.stock_dim+1]}")
                 # print(f'take sell action before : {actions[index]}')
                 actions[index] = self._sell_stock(index, actions[index]) * (-1)
                 # print(f'take sell action after : {actions[index]}')
                 # print(f"Num shares after: {self.state[index+self.stock_dim+1]}")
-
+            
+            print(f"before buy_index, actions are {actions}")
             for index in buy_index:
                 # print('take buy action: {}'.format(actions[index]))
                 actions[index] = self._buy_stock(index, actions[index])
-            print(f"actions are {actions}")
+            
+            print(f"after buy_index, actions are {actions}")
             self.actions_memory.append(actions)
 
             # state: s -> s+1
