@@ -293,9 +293,6 @@ class StockTradingEnv(gym.Env):
     def step(self, actions):
         # print(f"Without hmax - action = {actions}, action's shape is {actions.shape}, action's type is {type(actions)}")
         self.terminal = self.day >= len(self.df.index.unique()) - 1
-            """
-            这部分是terminal == True的操作
-            """
             # 如果 self.day ≥ 最后一个交易日的索引 → self.terminal = True，结束
             # 否则 → self.terminal = False，未结束
         if self.terminal: # 强化学习已经结束，进行最后统计
