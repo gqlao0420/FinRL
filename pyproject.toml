@@ -36,7 +36,7 @@ pyfolio-reloaded = "^0.9"
 pyportfolioopt = "^1"
 ray = {extras=["default", "tune"], version = "^2"}
 scikit-learn = "^1"
-stable-baselines3 = {version = ">=2.0.0a5", extras = ["extra"]}
+stable-baselines3 = {git="https://github.com/gqlao0420/stable-baselines3.git#egg=stockstats"} # {version = ">=2.0.0a5", extras = ["extra"]}
 # stockstats = "^0.6"
 stockstats = {git="https://github.com/gqlao0420/stockstats.git#egg=stockstats"}
 wrds = "^3"
