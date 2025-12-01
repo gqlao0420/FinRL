@@ -504,6 +504,8 @@ class StockTradingEnv(gym.Env):
             通过切片可以索引到同一个技术指标下，所有股票的指标数值，tech_num表示技术指标的序号，从0开始 - [stock_dim * (2 + tech_num) + 1 : stock_dim * (2 + tech_num + 1) + 1]
         """
         if self.initial:
+            # self.initial == True - 没有历史状态数据，直接从零开始
+            # self.initial == False - 需要从历史状态数据开始，
             # For Initial State
             if len(self.df.tic.unique()) > 1:
                 # for multiple stock
@@ -537,21 +539,22 @@ class StockTradingEnv(gym.Env):
                 )
         else:
             # Using Previous State
+            # 使用历史数据，要将历史数据中 资产额度、股票持有量 与当下数据做拼接！！！
             if len(self.df.tic.unique()) > 1:
                 # for multiple stock
                 state = (
-                    [self.previous_state[0]]
-                    + self.data.close.values.tolist()
+                    [self.previous_state[0]] # 历史资产数额
+                    + self.data.close.values.tolist() # 当下数据的收盘价
                     + self.previous_state[
                         (self.stock_dim + 1) : (self.stock_dim * 2 + 1)
-                    ]
+                    ] # 历史股票的持仓量
                     + sum(
                         (
                             self.data[tech].values.tolist()
                             for tech in self.tech_indicator_list
                         ),
                         [],
-                    )
+                    ) # 当下技术指标
                 )
             else:
                 # for single stock
